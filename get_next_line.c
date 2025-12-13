@@ -22,10 +22,10 @@ char *read_more(int fd, char *stored, char **nl_found)
 		if(bytes == 0)
 		{	if(stored[0] != '\0')
 				return (free(buffer), stored);
-			return (free(buffer), NULL);
+			return (free(buffer), free(stored), NULL);
 		}
 		if(bytes == -1)
-			return (free(buffer), NULL);
+			return (free(buffer), free(stored), NULL);
 		buffer[bytes] = '\0';
 		stored = join_str(stored, buffer, &malloc_size, stored_bytes, bytes);
 		if(!stored)
@@ -39,28 +39,30 @@ char *read_more(int fd, char *stored, char **nl_found)
 
 char *find_line(char *stored, char *nl_found)
 {
-	char *line;
-	int i;
+    char *line;
+    int i;
+    int len;
 
-	i = 0;
-	line = NULL;
-	if(nl_found == NULL && stored != NULL)
-		return stored;
-	if(nl_found == NULL && stored == NULL)
-		return NULL;
-	line = malloc(sizeof(*line) * (ft_strlen(stored) - ft_strlen(nl_found) + 2));
-	if(!line)
-		return NULL;
-	while(*stored != '\n')
-	{
-		line[i] = *stored;
-		i++;
-		stored++;
-	}
-	if(*stored == '\n')
-		line[i] = '\n';
-	line[i] = '\0';
-	return line;
+    if (!stored || !*stored)
+        return (NULL);
+
+    if (nl_found)
+        len = (int)(nl_found - stored) + 1;
+    else
+        len = ft_strlen(stored);
+
+    line = malloc(sizeof(char) * (len + 1));
+    if (!line)
+        return (NULL);
+
+    i = 0;
+    while (i < len)
+    {
+        line[i] = stored[i];
+        i++;
+    }
+    line[i] = '\0';
+    return (line);
 }
 
 char *update_stored(char *stored, char *nl_found)
@@ -91,11 +93,8 @@ char *update_stored(char *stored, char *nl_found)
 t_book *find_book(int fd, t_book **library)
 {
 	t_book *current;
-	t_book *start;
-	char *str;
 
 	current = *library;
-	start = *library;
 	while(current != NULL)
 	{
 		if(current->fd == fd)
@@ -104,14 +103,17 @@ t_book *find_book(int fd, t_book **library)
 	}
 	current = malloc(sizeof(t_book));
 	if(!current)
-		return (free_all_nodes(library), NULL);
+		return (NULL);
 	current->fd = fd;
-	str = malloc(1);
-	if(!str)
-		return (free_all_nodes(library), NULL);
-	str[0] = '\0';
-	current->str = str;
-	current->next = start;
+	current->str = malloc(1);
+	if(current->str == NULL)
+	{
+		free_node(library, current);
+		return (NULL);
+	}
+	current->str[0] = '\0';
+	current->next = *library;
+	*library = current;
 	return current;
 }
 
@@ -121,6 +123,7 @@ char *get_next_line(int fd)
 	t_book *current;
 	char *line;
 	char *nl_found;
+	char *buffer;
 
 	if(fd < 0 || BUFFER_SIZE <= 0)
 		return NULL;
@@ -128,16 +131,16 @@ char *get_next_line(int fd)
 	current = find_book(fd, &book);
 	if(current == NULL)
 		return (NULL);
-	current->str = read_more(fd, current->str, &nl_found);
-	if(current->str == NULL)
+	buffer = read_more(fd, current->str, &nl_found);
+	if(buffer == NULL)
 	{
-		printf("here\n");
+		current->str = NULL;
 		return (free_node(&book, current), NULL);
 	}
-	line = find_line(current->str, nl_found);
+	line = find_line(buffer, nl_found);
 	if(line == NULL)
-		return (free_node(&book, current), NULL);
-	current->str = update_stored(current->str, nl_found);
+		return (free(buffer), free_node(&book, current), NULL);
+	current->str = update_stored(buffer, nl_found);
 
 	return line;
 }
