@@ -39,13 +39,17 @@ void	*ft_memcpy(void *dest, const void *src, size_t n)
 char *join_str(char *stored, char *buffer, int *malloc_size, int s_length, int b_length)
 {
 	char *result;
+	int needed;
 
+	needed = s_length + b_length;
 	if(*malloc_size <= s_length + b_length)
 	{
 		if(*malloc_size == 0)
-			*malloc_size += BUFFER_SIZE;
+			*malloc_size = s_length + b_length;
 		else
 			*malloc_size *= 2;
+		if(*malloc_size < needed)
+			*malloc_size = needed;
 		result = malloc(sizeof(*result) * (*malloc_size + 1));
 		if(!result)
 			return NULL;

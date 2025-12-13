@@ -17,7 +17,7 @@ char *read_more(int fd, char *stored, char **nl_found)
 	{
 		buffer = malloc(sizeof(*buffer) * (BUFFER_SIZE + 1));
 		if(buffer == NULL)
-			return NULL;
+			return (free(stored), NULL);
 		bytes = read(fd, buffer, BUFFER_SIZE);
 		if(bytes == 0)
 		{	if(stored[0] != '\0')
@@ -108,7 +108,7 @@ t_book *find_book(int fd, t_book **library)
 	current->str = malloc(1);
 	if(current->str == NULL)
 	{
-		free_node(library, current);
+		free(current);
 		return (NULL);
 	}
 	current->str[0] = '\0';
@@ -137,7 +137,6 @@ char *get_next_line(int fd)
 		current->str = NULL;
 		return (free_node(&book, current), NULL);
 	}
-	current->str = buffer;
 	line = find_line(buffer, nl_found);
 	if(line == NULL)
 		return (free_node(&book, current), NULL);
