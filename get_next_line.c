@@ -137,9 +137,10 @@ char *get_next_line(int fd)
 		current->str = NULL;
 		return (free_node(&book, current), NULL);
 	}
+	current->str = buffer;
 	line = find_line(buffer, nl_found);
 	if(line == NULL)
-		return (free(buffer), free_node(&book, current), NULL);
+		return (free_node(&book, current), NULL);
 	current->str = update_stored(buffer, nl_found);
 
 	return line;
