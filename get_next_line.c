@@ -9,7 +9,10 @@ char *read_more(int fd, char *stored, char **nl_found)
 	int malloc_size;
 
 	if(!stored)
-		return NULL;
+	{
+		stored = malloc(1);
+		stored[0] = '\0';
+	}
 	stored_bytes = ft_strlen(stored);
 	malloc_size = stored_bytes;
 	*nl_found = ft_strchr(stored, '\n');

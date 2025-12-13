@@ -22,7 +22,7 @@ size_t ft_strlen(const char *s);
 char *get_next_line(int fd);
 
 #ifndef BUFFER_SIZE
-# define BUFFER_SIZE 42
+# define BUFFER_SIZE 1
 #endif
 
 #endif

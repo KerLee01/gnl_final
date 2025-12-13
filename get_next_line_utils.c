@@ -42,7 +42,7 @@ char *join_str(char *stored, char *buffer, int *malloc_size, int s_length, int b
 	int needed;
 
 	needed = s_length + b_length;
-	if(*malloc_size <= s_length + b_length)
+	if(*malloc_size <= needed)
 	{
 		if(*malloc_size == 0)
 			*malloc_size = s_length + b_length;
@@ -55,20 +55,22 @@ char *join_str(char *stored, char *buffer, int *malloc_size, int s_length, int b
 			return NULL;
 		ft_memcpy(result, stored, s_length);
 		free(stored);
-		while(*buffer != '\0')
+		while(b_length > 0)
 		{
 			result[s_length] = *buffer;
 			s_length++;
 			buffer++;
+			b_length--;
 		}
 		result[s_length] = '\0';
 		return result;
 	}
-	while(*buffer)
+	while(b_length > 0)
 	{
 		stored[s_length] = *buffer;
 		s_length++;
 		buffer++;
+		b_length--;
 	}
 	stored[s_length] = '\0';
 	return stored;
