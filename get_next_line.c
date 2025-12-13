@@ -128,6 +128,7 @@ char *get_next_line(int fd)
 	char *nl_found;
 	char *buffer;
 
+	buffer = NULL;
 	if(fd < 0 || BUFFER_SIZE <= 0)
 		return NULL;
 	nl_found = NULL;
@@ -143,7 +144,7 @@ char *get_next_line(int fd)
 	line = find_line(buffer, nl_found);
 	if(line == NULL)
 		return (free_node(&book, current), NULL);
-	current->str = update_stored(current->str, nl_found);
+	current->str = update_stored(buffer, nl_found);
 
 	return line;
 }
