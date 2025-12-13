@@ -99,24 +99,6 @@ void free_node(t_book **library, t_book *node_to_free)
 	free(current);
 }
 
-void free_all_nodes(t_book **library)
-{
-	t_book *current;
-	t_book *tmp;
-
-	if(!library || !*library)
-		return;
-	current = *library;
-	while(current != NULL)
-	{
-		tmp = current->next;
-		free(current->str);
-		free(current);
-		current = tmp;
-	}
-	*library = NULL;
-}
-
 char	*ft_strchr(const char *s, int c)
 {
 	unsigned char	uc;

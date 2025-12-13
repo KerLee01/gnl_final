@@ -143,7 +143,7 @@ char *get_next_line(int fd)
 	line = find_line(buffer, nl_found);
 	if(line == NULL)
 		return (free_node(&book, current), NULL);
-	current->str = update_stored(buffer, nl_found);
+	current->str = update_stored(current->str, nl_found);
 
 	return line;
 }
