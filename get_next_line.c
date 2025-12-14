@@ -11,6 +11,8 @@ char *read_more(int fd, char *stored, char **nl_found)
 	if(!stored)
 	{
 		stored = malloc(1);
+		if(!stored)
+			return NULL;
 		stored[0] = '\0';
 	}
 	stored_bytes = ft_strlen(stored);
