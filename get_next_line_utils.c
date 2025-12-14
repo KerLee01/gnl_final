@@ -95,7 +95,8 @@ void free_node(t_book **library, t_book *node_to_free)
 	else
 		prev->next = current->next;
 
-	free(current->str);
+	if (current->str)
+		free(current->str);
 	free(current);
 }
 
